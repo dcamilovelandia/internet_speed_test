@@ -55,14 +55,11 @@ public class InternetSpeedTestPlugin(internal var activity: Activity, internal v
 
     fun startListening(args: Any, result: Result, methodName: String, testServer: String) {
         // Get callback id
-        println("testttt")
         val currentListenerId = args as Int
-        println("testttt")
         val runnable = Runnable {
             if (callbackById.containsKey(currentListenerId)) {
                 val argsMap: MutableMap<String, Any> = mutableMapOf()
                 argsMap["id"] = currentListenerId
-                println("testttt $currentListenerId")
                 when (methodName) {
                     "startDownloadTesting" -> {
                         testDownloadSpeed(object : TestListener {
@@ -186,10 +183,9 @@ public class InternetSpeedTestPlugin(internal var activity: Activity, internal v
         println("Testing Testing")
         speedTestSocket.addSpeedTestListener(object : ISpeedTestListener {
             override fun onCompletion(report: SpeedTestReport) {
-//                // called when download/upload is complete
-//                println("[COMPLETED] rate in octet/s : " + report.transferRateOctet)
-//                println("[COMPLETED] rate in bit/s   : " + report.transferRateBit)
-//                testListener.onComplete(report.transferRateBit.toDouble())
+               println("[COMPLETED] rate in octet/s : " + report.transferRateOctet)
+               println("[COMPLETED] rate in bit/s   : " + report.transferRateBit)
+               testListener.onComplete(report.transferRateBit.toDouble())
             }
 
             override fun onError(speedTestError: SpeedTestError, errorMessage: String) {
@@ -199,33 +195,13 @@ public class InternetSpeedTestPlugin(internal var activity: Activity, internal v
             }
 
             override fun onProgress(percent: Float, report: SpeedTestReport) {
-//                // called to notify download/upload progress
-//                println("[PROGRESS] progress : $percent%")
-//                println("[PROGRESS] rate in octet/s : " + report.transferRateOctet)
-//                println("[PROGRESS] rate in bit/s   : " + report.transferRateBit)
-//                testListener.onProgress(percent.toDouble(), report.transferRateBit.toDouble())
+               println("[PROGRESS] progress : $percent%")
+               println("[PROGRESS] rate in octet/s : " + report.transferRateOctet)
+               println("[PROGRESS] rate in bit/s   : " + report.transferRateBit)
+               testListener.onProgress(percent.toDouble(), report.transferRateBit.toDouble())
             }
         })
        speedTestSocket.startFixedDownload("http://ipv4.ikoula.testdebit.info/1M.iso", 10000, 400)
-
-
-        // speedTestSocket.startDownloadRepeat(testServer,
-        //         20000, 500, object : IRepeatListener {
-        //     override fun onCompletion(report: SpeedTestReport) {
-        //         // called when download/upload is complete
-        //         println("[COMPLETED] rate in octet/s : " + report.transferRateOctet)
-        //         println("[COMPLETED] rate in bit/s   : " + report.transferRateBit)
-        //         testListener.onComplete(report.transferRateBit.toDouble())
-        //     }
-
-        //     override fun onReport(report: SpeedTestReport) {
-        //         // called to notify download/upload progress
-        //         println("[PROGRESS] progress : ${report.progressPercent}%")
-        //         println("[PROGRESS] rate in octet/s : " + report.transferRateOctet)
-        //         println("[PROGRESS] rate in bit/s   : " + report.transferRateBit)
-        //         testListener.onProgress(report.progressPercent.toDouble(), report.transferRateBit.toDouble())
-        //     }
-        // })
 
         println("After Testing")
     }
