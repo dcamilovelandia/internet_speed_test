@@ -81,7 +81,6 @@ public class InternetSpeedTestPlugin(internal var activity: Activity, internal v
                             }
 
                             override fun onProgress(percent: Double, transferRate: Double) {
-                                println("onProgress $percent, $transferRate")
                                 argsMap["percent"] = percent
                                 argsMap["transferRate"] = transferRate
                                 argsMap["type"] = ListenerEnum.PROGRESS.ordinal
@@ -135,11 +134,8 @@ public class InternetSpeedTestPlugin(internal var activity: Activity, internal v
 
     private fun testUploadSpeed(testListener: TestListener, testServer: String) {
         // add a listener to wait for speedtest completion and progress
-        println("Testing Testing")
         speedTestSocket.addSpeedTestListener(object : ISpeedTestListener {
             override fun onCompletion(report: SpeedTestReport) {
-               println("[COMPLETED] rate in octet/s : " + report.transferRateOctet)
-               println("[COMPLETED] rate in bit/s   : " + report.transferRateBit)
                testListener.onComplete(report.transferRateBit.toDouble())
             }
 
@@ -150,23 +146,16 @@ public class InternetSpeedTestPlugin(internal var activity: Activity, internal v
             }
 
             override fun onProgress(percent: Float, report: SpeedTestReport) {
-               println("[PROGRESS] progress : $percent%")
-               println("[PROGRESS] rate in octet/s : " + report.transferRateOctet)
-               println("[PROGRESS] rate in bit/s   : " + report.transferRateBit)
                testListener.onProgress(percent.toDouble(), report.transferRateBit.toDouble())
             }
         })
        speedTestSocket.startFixedUpload("http://ipv4.ikoula.testdebit.info/", 1000000, 10000, 400)
-        println("After Testing")
     }
 
     private fun testDownloadSpeed(testListener: TestListener, testServer: String) {
         // add a listener to wait for speedtest completion and progress
-        println("Testing Testing")
         speedTestSocket.addSpeedTestListener(object : ISpeedTestListener {
             override fun onCompletion(report: SpeedTestReport) {
-               println("[COMPLETED] rate in octet/s : " + report.transferRateOctet)
-               println("[COMPLETED] rate in bit/s   : " + report.transferRateBit)
                testListener.onComplete(report.transferRateBit.toDouble())
             }
 
@@ -177,15 +166,10 @@ public class InternetSpeedTestPlugin(internal var activity: Activity, internal v
             }
 
             override fun onProgress(percent: Float, report: SpeedTestReport) {
-               println("[PROGRESS] progress : $percent%")
-               println("[PROGRESS] rate in octet/s : " + report.transferRateOctet)
-               println("[PROGRESS] rate in bit/s   : " + report.transferRateBit)
                testListener.onProgress(percent.toDouble(), report.transferRateBit.toDouble())
             }
         })
        speedTestSocket.startFixedDownload("http://ipv4.ikoula.testdebit.info/1M.iso", 10000, 400)
-
-        println("After Testing")
     }
 
     private fun cancelListening(args: Any, result: Result) {
