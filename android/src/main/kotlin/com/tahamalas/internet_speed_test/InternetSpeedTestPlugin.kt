@@ -141,7 +141,7 @@ public class InternetSpeedTestPlugin(internal var activity: Activity, internal v
 
             override fun onError(speedTestError: SpeedTestError, errorMessage: String) {
                 // called when a download/upload error occur
-                println("OnError: ${speedTestError.name}, $errorMessage")
+                // println("OnError: ${speedTestError.name}, $errorMessage")
                 testListener.onError(errorMessage, speedTestError.name)
             }
 
@@ -161,7 +161,7 @@ public class InternetSpeedTestPlugin(internal var activity: Activity, internal v
 
             override fun onError(speedTestError: SpeedTestError, errorMessage: String) {
                 // called when a download/upload error occur
-                println("OnError: ${speedTestError.name}, $errorMessage")
+                // println("OnError: ${speedTestError.name}, $errorMessage")
                 testListener.onError(errorMessage, speedTestError.name)
             }
 
