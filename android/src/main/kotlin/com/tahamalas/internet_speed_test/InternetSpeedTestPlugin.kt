@@ -206,26 +206,26 @@ public class InternetSpeedTestPlugin(internal var activity: Activity, internal v
 //                testListener.onProgress(percent.toDouble(), report.transferRateBit.toDouble())
             }
         })
-//        speedTestSocket.startDownloadRepeat("http://ipv4.ikoula.testdebit.info/1M.iso", 10000)
+       speedTestSocket.startFixedDownload("http://ipv4.ikoula.testdebit.info/1M.iso", 10000, 400)
 
 
-        speedTestSocket.startDownloadRepeat(testServer,
-                20000, 500, object : IRepeatListener {
-            override fun onCompletion(report: SpeedTestReport) {
-                // called when download/upload is complete
-                println("[COMPLETED] rate in octet/s : " + report.transferRateOctet)
-                println("[COMPLETED] rate in bit/s   : " + report.transferRateBit)
-                testListener.onComplete(report.transferRateBit.toDouble())
-            }
+        // speedTestSocket.startDownloadRepeat(testServer,
+        //         20000, 500, object : IRepeatListener {
+        //     override fun onCompletion(report: SpeedTestReport) {
+        //         // called when download/upload is complete
+        //         println("[COMPLETED] rate in octet/s : " + report.transferRateOctet)
+        //         println("[COMPLETED] rate in bit/s   : " + report.transferRateBit)
+        //         testListener.onComplete(report.transferRateBit.toDouble())
+        //     }
 
-            override fun onReport(report: SpeedTestReport) {
-                // called to notify download/upload progress
-                println("[PROGRESS] progress : ${report.progressPercent}%")
-                println("[PROGRESS] rate in octet/s : " + report.transferRateOctet)
-                println("[PROGRESS] rate in bit/s   : " + report.transferRateBit)
-                testListener.onProgress(report.progressPercent.toDouble(), report.transferRateBit.toDouble())
-            }
-        })
+        //     override fun onReport(report: SpeedTestReport) {
+        //         // called to notify download/upload progress
+        //         println("[PROGRESS] progress : ${report.progressPercent}%")
+        //         println("[PROGRESS] rate in octet/s : " + report.transferRateOctet)
+        //         println("[PROGRESS] rate in bit/s   : " + report.transferRateBit)
+        //         testListener.onProgress(report.progressPercent.toDouble(), report.transferRateBit.toDouble())
+        //     }
+        // })
 
         println("After Testing")
     }
