@@ -76,8 +76,8 @@ class InternetSpeedTest {
             uploadSteps++;
             uploadRate +=
                 int.parse((call.arguments['transferRate'] ~/ 1000).toString());
-            print('download steps is $uploadSteps}');
-            print('download steps is $uploadRate}');
+            print('Upload steps are $uploadSteps}');
+            print('Upload rate is $uploadRate}');
             double average = (uploadRate ~/ uploadSteps).toDouble();
             SpeedUnit unit = SpeedUnit.Kbps;
             average /= 1000;

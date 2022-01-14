@@ -156,7 +156,7 @@ public class InternetSpeedTestPlugin(internal var activity: Activity, internal v
                testListener.onProgress(percent.toDouble(), report.transferRateBit.toDouble())
             }
         })
-       speedTestSocket.startFixedUpload("http://ipv4.ikoula.testdebit.info/", 10000000, 10000, 400)
+       speedTestSocket.startFixedUpload("http://ipv4.ikoula.testdebit.info/", 1000000, 10000, 400)
         println("After Testing")
     }
 
