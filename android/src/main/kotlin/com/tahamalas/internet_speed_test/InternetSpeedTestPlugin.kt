@@ -149,7 +149,7 @@ public class InternetSpeedTestPlugin(internal var activity: Activity, internal v
                testListener.onProgress(percent.toDouble(), report.transferRateBit.toDouble())
             }
         })
-       speedTestSocket.startFixedUpload("http://ipv4.ikoula.testdebit.info/", 1000000, 10000, 400)
+       speedTestSocket.startFixedUpload("http://ipv4.ikoula.testdebit.info/", 1000000, 10000)
     }
 
     private fun testDownloadSpeed(testListener: TestListener, testServer: String) {
@@ -169,7 +169,7 @@ public class InternetSpeedTestPlugin(internal var activity: Activity, internal v
                testListener.onProgress(percent.toDouble(), report.transferRateBit.toDouble())
             }
         })
-       speedTestSocket.startFixedDownload("http://ipv4.ikoula.testdebit.info/1M.iso", 10000, 400)
+       speedTestSocket.startFixedDownload("http://ipv4.ikoula.testdebit.info/1M.iso", 10000)
     }
 
     private fun cancelListening(args: Any, result: Result) {
