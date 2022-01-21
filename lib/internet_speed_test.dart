@@ -71,7 +71,7 @@ class InternetSpeedTest {
             double rate = (call.arguments['transferRate'] ~/ 1000).toDouble();
             print(call.arguments['transferRate']);
             SpeedUnit unit = SpeedUnit.Kbps;
-            // average /= 1000;
+            rate /= 1000;
             unit = SpeedUnit.Mbps;
             _callbacksById[call.arguments["id"]]!.item3(rate, unit);
             uploadSteps = 0;
