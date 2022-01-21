@@ -69,6 +69,7 @@ class InternetSpeedTest {
             //     int.parse((call.arguments['transferRate'] ~/ 1000).toString());
             // double average = (uploadRate ~/ uploadSteps).toDouble();
             double rate = (call.arguments['transferRate'] ~/ 1000).toDouble();
+            print(call.arguments['transferRate']);
             SpeedUnit unit = SpeedUnit.Kbps;
             // average /= 1000;
             unit = SpeedUnit.Mbps;
