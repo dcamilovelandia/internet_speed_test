@@ -64,14 +64,15 @@ class InternetSpeedTest {
             CallbacksEnum.START_UPLOAD_TESTING.index) {
           if (call.arguments['type'] == ListenerEnum.COMPLETE.index) {
 
-            uploadSteps++;
-            uploadRate +=
-                int.parse((call.arguments['transferRate'] ~/ 1000).toString());
-            double average = (uploadRate ~/ uploadSteps).toDouble();
+            // uploadSteps++;
+            // uploadRate +=
+            //     int.parse((call.arguments['transferRate'] ~/ 1000).toString());
+            // double average = (uploadRate ~/ uploadSteps).toDouble();
+            double rate = (call.arguments['transferRate'] ~/ 1000).toDouble();
             SpeedUnit unit = SpeedUnit.Kbps;
-            average /= 1000;
+            // average /= 1000;
             unit = SpeedUnit.Mbps;
-            _callbacksById[call.arguments["id"]]!.item3(average, unit);
+            _callbacksById[call.arguments["id"]]!.item3(rate, unit);
             uploadSteps = 0;
             uploadRate = 0;
             _callbacksById.remove(call.arguments["id"]);
