@@ -25,9 +25,9 @@ class InternetSpeedTest {
 
   _finishTest(MethodCall call){
     int testTime = DateTime.now().difference(startTime).inMicroseconds;
-    double downloadSpeed = 8000000 / testTime;
-    print("Measured Download Speed: $downloadSpeed");
-    _callbacksById[call.arguments["id"]]!.item3(downloadSpeed, SpeedUnit.Mbps);
+    double speed = 8000000 / testTime;
+    // print("Measured Download Speed: $downloadSpeed");
+    _callbacksById[call.arguments["id"]]!.item3(speed, SpeedUnit.Mbps);
     _callbacksById.remove(call.arguments["id"]);
   }
 
