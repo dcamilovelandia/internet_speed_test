@@ -33,6 +33,8 @@ class InternetSpeedTest {
         if (call.arguments["id"] as int ==
             CallbacksEnum.START_DOWNLOAD_TESTING.index) {
           if (call.arguments['type'] == ListenerEnum.COMPLETE.index) {
+            int testTime = DateTime.now().difference(startTime).inMicroseconds;
+            print("Measured Download Speed: ${8000000 / testTime}");
             downloadSteps++;
             downloadRate +=
                 int.parse((call.arguments['transferRate'] ~/ 1000).toString());
