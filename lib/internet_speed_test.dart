@@ -21,11 +21,15 @@ class InternetSpeedTest {
   Map<int, Tuple3<ErrorCallback, ProgressCallback, DoneCallback>>
       _callbacksById = new Map();
 
-  int downloadRate = 0;
-  int uploadRate = 0;
-  int downloadSteps = 0;
-  int uploadSteps = 0;
   DateTime startTime = DateTime.now();
+
+  _finishTest(MethodCall call){
+    int testTime = DateTime.now().difference(startTime).inMicroseconds;
+    double downloadSpeed = 8000000 / testTime;
+    print("Measured Download Speed: $downloadSpeed");
+    _callbacksById[call.arguments["id"]]!.item3(downloadSpeed, SpeedUnit.Mbps);
+    _callbacksById.remove(call.arguments["id"]);
+  }
 
   Future<void> _methodCallHandler(MethodCall call) async {
     switch (call.method) {
@@ -33,70 +37,26 @@ class InternetSpeedTest {
         if (call.arguments["id"] as int ==
             CallbacksEnum.START_DOWNLOAD_TESTING.index) {
           if (call.arguments['type'] == ListenerEnum.COMPLETE.index) {
-            int testTime = DateTime.now().difference(startTime).inMicroseconds;
-            print("Measured Download Speed: ${8000000 / testTime}");
-            downloadSteps++;
-            downloadRate +=
-                int.parse((call.arguments['transferRate'] ~/ 1000).toString());
-            double average = (downloadRate ~/ downloadSteps).toDouble();
-            SpeedUnit unit = SpeedUnit.Kbps;
-            average /= 1000;
-            unit = SpeedUnit.Mbps;
-            _callbacksById[call.arguments["id"]]!.item3(average, unit);
-            downloadSteps = 0;
-            downloadRate = 0;
-            _callbacksById.remove(call.arguments["id"]);
+            _finishTest(call);
           } else if (call.arguments['type'] == ListenerEnum.ERROR.index) {
             _callbacksById[call.arguments["id"]]!.item1(
                 call.arguments['errorMessage'],
                 call.arguments['speedTestError']);
-            downloadSteps = 0;
-            downloadRate = 0;
             _callbacksById.remove(call.arguments["id"]);
           } else if (call.arguments['type'] == ListenerEnum.PROGRESS.index) {
-            double rate = (call.arguments['transferRate'] ~/ 1000).toDouble();
-            if (rate != 0) downloadSteps++;
-            downloadRate += rate.toInt();
-            SpeedUnit unit = SpeedUnit.Kbps;
-            rate /= 1000;
-            unit = SpeedUnit.Mbps;
-            _callbacksById[call.arguments["id"]]!
-                .item2(call.arguments['percent'].toDouble(), rate, unit);
+            if(call.arguments['percent'].toDouble() == 100.0) _finishTest(call);
           }
         } else if (call.arguments["id"] as int ==
             CallbacksEnum.START_UPLOAD_TESTING.index) {
           if (call.arguments['type'] == ListenerEnum.COMPLETE.index) {
-            int testTime = DateTime.now().difference(startTime).inMicroseconds;
-            print("Measured Upload Speed: ${8000000 / testTime}");
-            uploadSteps++;
-            // print(uploadSteps);
-            uploadRate +=
-                int.parse((call.arguments['transferRate'] ~/ 1000).toString());
-            double average = (uploadRate ~/ uploadSteps).toDouble();
-            // double rate = (call.arguments['transferRate'] ~/ 1000).toDouble();
-            // print(call.arguments['transferRate']);
-            SpeedUnit unit = SpeedUnit.Kbps;
-            // rate /= 1000;
-            average /= 1000;
-            unit = SpeedUnit.Mbps;
-            _callbacksById[call.arguments["id"]]!.item3(average, unit);
-            uploadSteps = 0;
-            uploadRate = 0;
-            _callbacksById.remove(call.arguments["id"]);
+            _finishTest(call);
+          
           } else if (call.arguments['type'] == ListenerEnum.ERROR.index) {
             _callbacksById[call.arguments["id"]]!.item1(
                 call.arguments['errorMessage'],
                 call.arguments['speedTestError']);
           } else if (call.arguments['type'] == ListenerEnum.PROGRESS.index) {
-            double rate = (call.arguments['transferRate'] ~/ 1000).toDouble();
-            // print(rate);
-            if (rate != 0) uploadSteps++;
-            uploadRate += rate.toInt();
-            SpeedUnit unit = SpeedUnit.Kbps;
-            rate /= 1000.0;
-            unit = SpeedUnit.Mbps;
-            _callbacksById[call.arguments["id"]]!
-                .item2(call.arguments['percent'].toDouble(), rate, unit);
+            if(call.arguments['percent'].toDouble() == 100.0) _finishTest(call);
           }
         }
 //        _callbacksById[call.arguments["id"]](call.arguments["args"]);
