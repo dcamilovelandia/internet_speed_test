@@ -25,6 +25,7 @@ class InternetSpeedTest {
   int uploadRate = 0;
   int downloadSteps = 0;
   int uploadSteps = 0;
+  DateTime startTime = DateTime.now();
 
   Future<void> _methodCallHandler(MethodCall call) async {
     switch (call.method) {
@@ -63,14 +64,15 @@ class InternetSpeedTest {
         } else if (call.arguments["id"] as int ==
             CallbacksEnum.START_UPLOAD_TESTING.index) {
           if (call.arguments['type'] == ListenerEnum.COMPLETE.index) {
-
+            int testTime = DateTime.now().difference(startTime).inMicroseconds;
+            print("Measured Upload Speed: ${8000000 / testTime}");
             uploadSteps++;
-            print(uploadSteps);
+            // print(uploadSteps);
             uploadRate +=
                 int.parse((call.arguments['transferRate'] ~/ 1000).toString());
             double average = (uploadRate ~/ uploadSteps).toDouble();
             // double rate = (call.arguments['transferRate'] ~/ 1000).toDouble();
-            print(call.arguments['transferRate']);
+            // print(call.arguments['transferRate']);
             SpeedUnit unit = SpeedUnit.Kbps;
             // rate /= 1000;
             average /= 1000;
@@ -85,7 +87,7 @@ class InternetSpeedTest {
                 call.arguments['speedTestError']);
           } else if (call.arguments['type'] == ListenerEnum.PROGRESS.index) {
             double rate = (call.arguments['transferRate'] ~/ 1000).toDouble();
-            print(rate);
+            // print(rate);
             if (rate != 0) uploadSteps++;
             uploadRate += rate.toInt();
             SpeedUnit unit = SpeedUnit.Kbps;
@@ -111,6 +113,7 @@ class InternetSpeedTest {
       String testServer,
       {Map<String, dynamic>? args,
       int fileSize = 200000}) async {
+    startTime = DateTime.now();
     _channel.setMethodCallHandler(_methodCallHandler);
     int currentListenerId = callbacksEnum.index;
     _callbacksById[currentListenerId] = callback;
@@ -135,6 +138,7 @@ class InternetSpeedTest {
       required ErrorCallback onError,
       int fileSize = 200000,
       String testServer = 'http://ipv4.ikoula.testdebit.info/1M.iso'}) async {
+      
     return await _startListening(Tuple3(onError, onProgress, onDone),
         CallbacksEnum.START_DOWNLOAD_TESTING, testServer,
         fileSize: fileSize);
