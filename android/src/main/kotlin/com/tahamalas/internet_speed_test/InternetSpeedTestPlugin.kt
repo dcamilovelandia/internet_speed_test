@@ -38,8 +38,8 @@ public class InternetSpeedTestPlugin(internal var activity: Activity, internal v
         val argsMap = arguments as Map<*, *>
 
         when (val args = argsMap["id"] as Int) {
-            CallbacksEnum.START_DOWNLOAD_TESTING.ordinal -> startListening(args, result, "startDownloadTesting", argsMap["testServer"] as String, argsMap["fileSize"] as Int)
-            CallbacksEnum.START_UPLOAD_TESTING.ordinal -> startListening(args, result, "startUploadTesting", argsMap["testServer"] as String, argsMap["fileSize"] as Int)
+            CallbacksEnum.START_DOWNLOAD_TESTING.ordinal -> startListening(args, result, "startDownloadTesting", argsMap["testServer"] as String, argsMap["fileSize"] as Int, argsMap["timeout"] as Int)
+            CallbacksEnum.START_UPLOAD_TESTING.ordinal -> startListening(args, result, "startUploadTesting", argsMap["testServer"] as String, argsMap["fileSize"] as Int, argsMap["timeout"] as Int)
         }
     }
 
@@ -53,7 +53,7 @@ public class InternetSpeedTestPlugin(internal var activity: Activity, internal v
 
     private val callbackById: MutableMap<Int, Runnable> = mutableMapOf()
 
-    fun startListening(args: Any, result: Result, methodName: String, testServer: String, fileSize : Int) {
+    fun startListening(args: Any, result: Result, methodName: String, testServer: String, fileSize : Int, timeout : Int) {
         // Get callback id
         val currentListenerId = args as Int
         val runnable = Runnable {
@@ -88,7 +88,7 @@ public class InternetSpeedTestPlugin(internal var activity: Activity, internal v
                                     methodChannel.invokeMethod("callListener", argsMap)
                                 }
                             }
-                        }, testServer)
+                        }, testServer, timeout)
                     }
                     "startUploadTesting" -> {
                         testUploadSpeed(object : TestListener {
@@ -117,7 +117,7 @@ public class InternetSpeedTestPlugin(internal var activity: Activity, internal v
                                     methodChannel.invokeMethod("callListener", argsMap)
                                 }
                             }
-                        }, testServer, fileSize)
+                        }, testServer, fileSize, timeout)
                     }
 
                 }
@@ -132,7 +132,7 @@ public class InternetSpeedTestPlugin(internal var activity: Activity, internal v
         result.success(null)
     }
 
-    private fun testUploadSpeed(testListener: TestListener, testServer: String, fileSize : Int) {
+    private fun testUploadSpeed(testListener: TestListener, testServer: String, fileSize : Int, timeout : Int) {
         // add a listener to wait for speedtest completion and progress
         speedTestSocket.addSpeedTestListener(object : ISpeedTestListener {
             override fun onCompletion(report: SpeedTestReport) {
@@ -149,10 +149,10 @@ public class InternetSpeedTestPlugin(internal var activity: Activity, internal v
                testListener.onProgress(percent.toDouble(), report.transferRateBit.toDouble())
             }
         })
-       speedTestSocket.startFixedUpload(testServer, fileSize, 10000)
+       speedTestSocket.startFixedUpload(testServer, fileSize, (timeout * 1000))
     }
 
-    private fun testDownloadSpeed(testListener: TestListener, testServer: String) {
+    private fun testDownloadSpeed(testListener: TestListener, testServer: String, timeout : Int) {
         // add a listener to wait for speedtest completion and progress
         speedTestSocket.addSpeedTestListener(object : ISpeedTestListener {
             override fun onCompletion(report: SpeedTestReport) {
@@ -169,7 +169,7 @@ public class InternetSpeedTestPlugin(internal var activity: Activity, internal v
                testListener.onProgress(percent.toDouble(), report.transferRateBit.toDouble())
             }
         })
-       speedTestSocket.startFixedDownload(testServer, 10000)
+       speedTestSocket.startFixedDownload(testServer, (timeout * 1000))
     }
 
     private fun cancelListening(args: Any, result: Result) {

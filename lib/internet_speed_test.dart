@@ -51,7 +51,6 @@ class InternetSpeedTest {
             CallbacksEnum.START_UPLOAD_TESTING.index) {
           if (call.arguments['type'] == ListenerEnum.COMPLETE.index) {
             _finishTest(call);
-          
           } else if (call.arguments['type'] == ListenerEnum.ERROR.index) {
             _callbacksById[call.arguments["id"]]!.item1(
                 call.arguments['errorMessage'],
@@ -75,7 +74,8 @@ class InternetSpeedTest {
       CallbacksEnum callbacksEnum,
       String testServer,
       {Map<String, dynamic>? args,
-      int fileSize = 1000000}) async {
+      int fileSize = 1000000,
+      int timeout = 16}) async {
     _startTime = DateTime.now();
     _fileSize = fileSize;
     _channel.setMethodCallHandler(_methodCallHandler);
@@ -88,6 +88,7 @@ class InternetSpeedTest {
         'args': args,
         'testServer': testServer,
         'fileSize': fileSize,
+        'timeout': timeout,
       },
     );
     return () {
