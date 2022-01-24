@@ -21,11 +21,12 @@ class InternetSpeedTest {
   Map<int, Tuple3<ErrorCallback, ProgressCallback, DoneCallback>>
       _callbacksById = new Map();
 
-  DateTime startTime = DateTime.now();
+  DateTime _startTime = DateTime.now();
+  int _fileSize = 1000000;
 
   _finishTest(MethodCall call){
-    int testTime = DateTime.now().difference(startTime).inMicroseconds;
-    double speed = 8000000 / testTime;
+    int testTime = DateTime.now().difference(_startTime).inMicroseconds;
+    double speed = (8 * _fileSize) / testTime;
     // print("Measured Download Speed: $downloadSpeed");
     _callbacksById[call.arguments["id"]]!.item3(speed, SpeedUnit.Mbps);
     _callbacksById.remove(call.arguments["id"]);
@@ -74,8 +75,9 @@ class InternetSpeedTest {
       CallbacksEnum callbacksEnum,
       String testServer,
       {Map<String, dynamic>? args,
-      int fileSize = 200000}) async {
-    startTime = DateTime.now();
+      int fileSize = 1000000}) async {
+    _startTime = DateTime.now();
+    _fileSize = fileSize;
     _channel.setMethodCallHandler(_methodCallHandler);
     int currentListenerId = callbacksEnum.index;
     _callbacksById[currentListenerId] = callback;
