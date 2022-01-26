@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -27,7 +28,7 @@ class InternetSpeedTest {
 
   _finishTest(MethodCall call){
     int testTime = DateTime.now().difference(_startTime).inMicroseconds;
-    double speed = (testTime > (_timeout * (10 ^ 6))) ? 0 : (8 * _fileSize) / testTime;
+    double speed = (testTime > (_timeout * pow(10, 6))) ? 0 : (8 * _fileSize) / testTime;
     // print("Measured Download Speed: $downloadSpeed");
     _callbacksById[call.arguments["id"]]!.item3(speed, SpeedUnit.Mbps);
     _callbacksById.remove(call.arguments["id"]);
