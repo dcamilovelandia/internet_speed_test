@@ -23,10 +23,11 @@ class InternetSpeedTest {
 
   DateTime _startTime = DateTime.now();
   int _fileSize = 1000000;
+  int _timeout = 0;
 
   _finishTest(MethodCall call){
     int testTime = DateTime.now().difference(_startTime).inMicroseconds;
-    double speed = (8 * _fileSize) / testTime;
+    double speed = (testTime > (_timeout * (10 ^ 6))) ? 0 : (8 * _fileSize) / testTime;
     // print("Measured Download Speed: $downloadSpeed");
     _callbacksById[call.arguments["id"]]!.item3(speed, SpeedUnit.Mbps);
     _callbacksById.remove(call.arguments["id"]);
@@ -78,6 +79,8 @@ class InternetSpeedTest {
       int timeout = 16}) async {
     _startTime = DateTime.now();
     _fileSize = fileSize;
+    _timeout = timeout;
+
     _channel.setMethodCallHandler(_methodCallHandler);
     int currentListenerId = callbacksEnum.index;
     _callbacksById[currentListenerId] = callback;
@@ -102,11 +105,12 @@ class InternetSpeedTest {
       required ProgressCallback onProgress,
       required ErrorCallback onError,
       int fileSize = 200000,
-      String testServer = 'http://ipv4.ikoula.testdebit.info/1M.iso'}) async {
+      String testServer = 'http://ipv4.ikoula.testdebit.info/1M.iso',
+      int timeout = 16}) async {
       
     return await _startListening(Tuple3(onError, onProgress, onDone),
         CallbacksEnum.START_DOWNLOAD_TESTING, testServer,
-        fileSize: fileSize);
+        fileSize: fileSize, timeout: timeout);
   }
 
   Future<CancelListening> startUploadTesting({
@@ -115,9 +119,10 @@ class InternetSpeedTest {
     required ErrorCallback onError,
     int fileSize = 200000,
     String testServer = 'http://ipv4.ikoula.testdebit.info/',
+    int timeout = 16
   }) async {
     return await _startListening(Tuple3(onError, onProgress, onDone),
         CallbacksEnum.START_UPLOAD_TESTING, testServer,
-        fileSize: fileSize);
+        fileSize: fileSize, timeout:  timeout);
   }
 }
